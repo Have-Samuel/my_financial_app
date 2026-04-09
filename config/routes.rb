@@ -12,4 +12,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+
+  authenticated :admin do
+    root to: "admin#index", as: :admin_root
+  end
+
+  get "admin" => "admin#index"
 end
