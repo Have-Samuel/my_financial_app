@@ -55,7 +55,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem 'rubocop', '>= 1.0', '< 2.0'
+  gem "rubocop", ">= 1.0", "< 2.0"
 end
 
 group :development do
