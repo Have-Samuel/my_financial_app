@@ -10,6 +10,6 @@
 
 #### References
 
-- https://www.youtube.com/watch?v=iTDRjImTTCg&t=318s
+- <https://www.youtube.com/watch?v=iTDRjImTTCg&t=318s>
 
-- https://www.youtube.com/watch?v=iTDRjImTTCg
+- <https://www.youtube.com/watch?v=iTDRjImTTCg>
