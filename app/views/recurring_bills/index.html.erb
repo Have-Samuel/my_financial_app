@@ -5,6 +5,7 @@
           class: "rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
   </div>
 
+  <% if @all_bills.any? %>
   <div class="grid gap-6 lg:grid-cols-5">
     <div class="space-y-6 lg:col-span-2">
       <%# Total monthly bills %>
@@ -118,4 +119,11 @@
       <% end %>
     </section>
   </div>
+  <% else %>
+    <section class="rounded-xl bg-white p-10 text-center">
+      <p class="text-sm text-muted">No recurring bills yet. Add a scheduled bill to track it here.</p>
+      <%= link_to "+ Add New Bill", new_recurring_bill_path,
+            class: "mt-4 inline-block rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+    </section>
+  <% end %>
 </div>

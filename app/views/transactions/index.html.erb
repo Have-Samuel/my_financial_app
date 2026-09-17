@@ -81,7 +81,15 @@
           </tbody>
         </table>
       <% else %>
-        <p class="py-8 text-center text-sm text-muted">No transactions found.</p>
+        <div class="py-8 text-center">
+          <% if params[:q].present? || params[:category_id].present? %>
+            <p class="text-sm text-muted">No transactions match your filters.</p>
+            <%= link_to "Clear filters", transactions_path, class: "mt-2 inline-block text-sm text-navy underline" %>
+          <% else %>
+            <p class="text-sm text-muted">No transactions yet.</p>
+            <%= link_to "Add your first transaction", new_transaction_path, class: "mt-2 inline-block text-sm text-navy underline" %>
+          <% end %>
+        </div>
       <% end %>
 
       <% if @query.total_pages > 1 %>
