@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-navy: #201f24;
+  --color-beige: #f8f4f0;
+  --color-teal: #277c78;
+  --color-muted: #696868;
+  --color-red: #c94736;
+}

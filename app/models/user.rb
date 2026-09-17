@@ -19,4 +19,12 @@ class User < ApplicationRecord
   def balance_cents
     transactions.income.sum(:amount_cents) - transactions.expense.sum(:amount_cents)
   end
+
+  def monthly_income_cents(date = Date.current)
+    transactions.income.where(occurred_on: date.all_month).sum(:amount_cents)
+  end
+
+  def monthly_expenses_cents(date = Date.current)
+    transactions.expense.where(occurred_on: date.all_month).sum(:amount_cents)
+  end
 end

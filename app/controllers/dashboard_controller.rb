@@ -1,0 +1,15 @@
+class DashboardController < ApplicationController
+  before_action :authenticate_user!
+
+  def index
+    @balance_cents = current_user.balance_cents
+    @income_cents = current_user.monthly_income_cents
+    @expenses_cents = current_user.monthly_expenses_cents
+    @recent_transactions = current_user.transactions
+                                       .includes(:category)
+                                       .chronological.limit(5)
+    @pots = current_user.pots.includes(:pot_transactions)
+    @budgets = current_user.budgets.includes(:category)
+    @bills = current_user.recurring_bills
+  end
+end

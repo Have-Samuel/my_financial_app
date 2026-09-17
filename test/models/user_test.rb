@@ -26,4 +26,16 @@ class UserTest < ActiveSupport::TestCase
   test "balance_cents is zero with no transactions" do
     assert_equal 0, users(:two).balance_cents
   end
+
+  test "monthly_income_cents only counts the current month" do
+    user = users(:one)
+    expected = user.transactions.income
+                   .where(occurred_on: Date.current.all_month)
+                   .sum(:amount_cents)
+
+    user.transactions.create!(category: categories(:groceries), recipient: "Old Pay",
+      amount_cents: 50_000, direction: :income, occurred_on: 2.months.ago)
+
+    assert_equal expected, user.reload.monthly_income_cents
+  end
 end

@@ -11,9 +11,9 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Signed-in users land on the app at "/"
+  # Signed-in users land on the dashboard at "/"
   authenticated :user do
-    root to: "home#index", as: :user_root
+    root to: "dashboard#index", as: :user_root
   end
 
   # Signed-in admins land on the back-office at "/"
@@ -21,8 +21,8 @@ Rails.application.routes.draw do
     root to: "admin#index", as: :admin_root
   end
 
-  # Visitors hit HomeController's gate and are redirected to /users/sign_in
-  root "home#index"
+  # Visitors hit DashboardController's gate and are redirected to /users/sign_in
+  root "dashboard#index"
 
   get "admin" => "admin#index"
 end
