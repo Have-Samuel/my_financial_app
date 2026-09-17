@@ -1,0 +1,13 @@
+electric:
+  user: one
+  title: Spark Electric
+  amount_cents: 10000
+  due_day: 15
+  status: pending
+
+rent:
+  user: one
+  title: Monthly Rent
+  amount_cents: 150000
+  due_day: 1
+  status: paid

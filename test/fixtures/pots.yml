@@ -1,0 +1,5 @@
+vacation:
+  user: one
+  name: Vacation Fund
+  target_cents: 200000
+  color: "#626070"

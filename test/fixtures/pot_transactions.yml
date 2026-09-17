@@ -1,0 +1,9 @@
+vacation_deposit:
+  pot: vacation
+  amount_cents: 15000
+  transacted_on: <%= 5.days.ago.to_date %>
+
+vacation_withdrawal:
+  pot: vacation
+  amount_cents: -2000
+  transacted_on: <%= 2.days.ago.to_date %>

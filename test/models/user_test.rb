@@ -17,4 +17,13 @@ class UserTest < ActiveSupport::TestCase
     user = User.new(name: "Bob", email: "ADA@example.com", password: "secret123")
     assert_not user.valid?
   end
+
+  test "balance_cents is income minus expenses" do
+    # fixtures: 300000 income, 8540 + 2250 expenses
+    assert_equal 289210, users(:one).balance_cents
+  end
+
+  test "balance_cents is zero with no transactions" do
+    assert_equal 0, users(:two).balance_cents
+  end
 end
