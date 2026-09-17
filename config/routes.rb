@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   root "dashboard#index"
 
   resources :transactions, except: :show
+  resources :budgets, except: :show
 
   get "admin" => "admin#index"
 end

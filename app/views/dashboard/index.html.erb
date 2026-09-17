@@ -94,7 +94,7 @@
       <section class="rounded-xl bg-white p-6">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-bold">Budgets</h2>
-          <span class="text-sm text-muted">See Details</span>
+          <%= link_to "See Details", budgets_path, class: "text-sm text-muted hover:text-navy" %>
         </div>
         <% if @budgets.any? %>
           <% total_limit = @budgets.sum(&:limit_cents) %>
