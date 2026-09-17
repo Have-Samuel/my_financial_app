@@ -1,0 +1,46 @@
+<div class="rounded-xl bg-card p-8">
+  <div class="mb-6 text-center">
+    <p class="text-2xl font-bold">finance</p>
+    <h1 class="mt-4 text-lg font-bold">Sign up</h1>
+    <p class="mt-1 text-sm text-muted">Create your account to get started.</p>
+  </div>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div>
+      <%= f.label :name, class: "mb-1.5 block text-xs font-bold text-muted" %>
+      <%= f.text_field :name, autofocus: true, autocomplete: "name", placeholder: "Alex Carter",
+            class: "w-full rounded-lg border border-beige bg-beige px-4 py-3 text-sm transition-colors placeholder:text-muted/50" %>
+    </div>
+
+    <div>
+      <%= f.label :email, class: "mb-1.5 block text-xs font-bold text-muted" %>
+      <%= f.email_field :email, autocomplete: "email", placeholder: "you@example.com",
+            class: "w-full rounded-lg border border-beige bg-beige px-4 py-3 text-sm transition-colors placeholder:text-muted/50" %>
+    </div>
+
+    <div>
+      <div class="mb-1.5 flex items-center justify-between">
+        <%= f.label :password, class: "block text-xs font-bold text-muted" %>
+        <% if @minimum_password_length %>
+          <span class="text-xs text-muted"><%= @minimum_password_length %>+ characters</span>
+        <% end %>
+      </div>
+      <%= f.password_field :password, autocomplete: "new-password", placeholder: "••••••••",
+            class: "w-full rounded-lg border border-beige bg-beige px-4 py-3 text-sm transition-colors placeholder:text-muted/50" %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation, class: "mb-1.5 block text-xs font-bold text-muted" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "••••••••",
+            class: "w-full rounded-lg border border-beige bg-beige px-4 py-3 text-sm transition-colors placeholder:text-muted/50" %>
+    </div>
+
+    <%= f.submit "Sign up", class: "w-full cursor-pointer rounded-lg bg-navy px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-[#3a3940] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy/50" %>
+  <% end %>
+
+  <div class="mt-5 text-center">
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

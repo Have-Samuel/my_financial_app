@@ -5,7 +5,34 @@
 
   --color-navy: #201f24;
   --color-beige: #f8f4f0;
+  --color-card: #fdfbf8;
   --color-teal: #277c78;
   --color-muted: #696868;
   --color-red: #c94736;
+}
+
+@layer base {
+  /* Subtle brand-tinted focus ring instead of the harsh default blue outline. */
+  :is(input[type="text"], input[type="email"], input[type="password"],
+      input[type="number"], input[type="date"], input[type="search"],
+      select, textarea):focus {
+    outline: none;
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-teal) 20%, transparent);
+  }
+
+  /* Brand-colored checkboxes and radios. */
+  input[type="checkbox"], input[type="radio"] {
+    accent-color: var(--color-navy);
+  }
+
+  /* Chrome's autofill paints a light-blue fill; restyle it to the warm palette. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-beige) inset;
+    -webkit-text-fill-color: var(--color-navy);
+    caret-color: var(--color-navy);
+    transition: background-color 9999s ease-out;
+  }
 }
