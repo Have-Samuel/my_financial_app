@@ -1,0 +1,43 @@
+<%= form_with model: @bill, class: "space-y-5" do |f| %>
+  <% if @bill.errors.any? %>
+    <div class="rounded-xl bg-red/10 px-4 py-3 text-sm text-red">
+      <p class="font-bold">Couldn't save bill:</p>
+      <ul class="mt-1 list-inside list-disc">
+        <% @bill.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, "Bill Title", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.text_field :title, required: true, placeholder: "e.g. Spark Electric Solutions",
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <%= f.label :amount, "Amount ($)", class: "mb-1 block text-sm font-bold text-muted" %>
+      <%= f.number_field :amount, step: "0.01", min: "0.01", required: true, placeholder: "0.00",
+            class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :due_day, "Due Day of Month", class: "mb-1 block text-sm font-bold text-muted" %>
+      <%= f.number_field :due_day, min: 1, max: 31, required: true, placeholder: "1-31",
+            class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :status, class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.select :status, [["Pending", "pending"], ["Paid", "paid"]], {},
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    <p class="mt-1 text-xs text-muted">"Overdue" is managed automatically by a scheduled job.</p>
+  </div>
+
+  <div class="flex items-center gap-3 pt-2">
+    <%= f.submit class: "rounded-lg bg-navy px-5 py-3 text-sm font-bold text-white cursor-pointer" %>
+    <%= link_to "Cancel", recurring_bills_path, class: "text-sm text-muted" %>
+  </div>
+<% end %>

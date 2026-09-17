@@ -128,7 +128,7 @@
       <section class="rounded-xl bg-white p-6">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-bold">Recurring Bills</h2>
-          <span class="text-sm text-muted">See Details</span>
+          <%= link_to "See Details", recurring_bills_path, class: "text-sm text-muted hover:text-navy" %>
         </div>
         <% paid = @bills.select(&:paid?) %>
         <% upcoming = @bills.select { |b| !b.paid? && !b.due_soon? } %>

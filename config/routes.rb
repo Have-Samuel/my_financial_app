@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   resources :pots, except: :show do
     resources :pot_transactions, only: %i[new create]
   end
+  resources :recurring_bills, except: :show
 
   get "admin" => "admin#index"
 end
