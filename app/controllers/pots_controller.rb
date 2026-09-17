@@ -3,7 +3,7 @@ class PotsController < ApplicationController
   before_action :set_pot, only: %i[edit update destroy]
 
   def index
-    @pots = current_user.pots.includes(:pot_transactions)
+    @pots = Pot.preload_saved_cents(current_user.pots)
   end
 
   def new

@@ -4,7 +4,7 @@ class BudgetsController < ApplicationController
   before_action :set_available_categories, only: %i[new create edit update]
 
   def index
-    @budgets = current_user.budgets.includes(:category)
+    @budgets = Budget.preload_monthly_spend(current_user.budgets.includes(:category))
   end
 
   def new

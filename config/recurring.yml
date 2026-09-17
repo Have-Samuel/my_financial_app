@@ -16,8 +16,3 @@ production:
   mark_overdue_bills:
     class: MarkOverdueBillsJob
     schedule: every day at 6am
-
-development:
-  mark_overdue_bills:
-    class: MarkOverdueBillsJob
-    schedule: every day at 6am

@@ -8,8 +8,8 @@ class DashboardController < ApplicationController
     @recent_transactions = current_user.transactions
                                        .includes(:category)
                                        .chronological.limit(5)
-    @pots = current_user.pots.includes(:pot_transactions)
-    @budgets = current_user.budgets.includes(:category)
+    @pots = Pot.preload_saved_cents(current_user.pots)
+    @budgets = Budget.preload_monthly_spend(current_user.budgets.includes(:category))
     @bills = current_user.recurring_bills
   end
 end
