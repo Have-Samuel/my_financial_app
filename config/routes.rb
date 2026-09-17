@@ -24,5 +24,7 @@ Rails.application.routes.draw do
   # Visitors hit DashboardController's gate and are redirected to /users/sign_in
   root "dashboard#index"
 
+  resources :transactions, except: :show
+
   get "admin" => "admin#index"
 end

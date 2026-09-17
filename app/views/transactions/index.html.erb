@@ -1,0 +1,117 @@
+<div class="mx-auto max-w-6xl space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-bold">Transactions</h1>
+    <%= link_to "+ Add New Transaction", new_transaction_path,
+          class: "rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+  </div>
+
+  <section class="rounded-xl bg-white p-6">
+    <%= form_with url: transactions_path, method: :get,
+          data: { turbo_frame: "transactions_list", controller: "search", action: "input->search#submit change->search#submit" },
+          class: "mb-6 flex flex-col gap-4 sm:flex-row sm:items-center" do %>
+      <div class="relative flex-1">
+        <input type="search" name="q" value="<%= params[:q] %>" placeholder="Search transaction"
+               class="w-full rounded-lg border border-beige px-4 py-2.5 pr-10 text-sm">
+        <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-muted"></i>
+      </div>
+      <div class="flex items-center gap-3">
+        <label for="sort" class="text-sm text-muted">Sort by</label>
+        <select id="sort" name="sort" class="rounded-lg border border-beige px-3 py-2.5 text-sm">
+          <option value="latest"  <%= "selected" if @query.sort == "latest" %>>Latest</option>
+          <option value="oldest"  <%= "selected" if @query.sort == "oldest" %>>Oldest</option>
+          <option value="a-z"     <%= "selected" if @query.sort == "a-z" %>>A to Z</option>
+          <option value="z-a"     <%= "selected" if @query.sort == "z-a" %>>Z to A</option>
+          <option value="highest" <%= "selected" if @query.sort == "highest" %>>Highest</option>
+          <option value="lowest"  <%= "selected" if @query.sort == "lowest" %>>Lowest</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-3">
+        <label for="category_id" class="text-sm text-muted">Category</label>
+        <select id="category_id" name="category_id" class="rounded-lg border border-beige px-3 py-2.5 text-sm">
+          <option value="">All Transactions</option>
+          <% @categories.each do |category| %>
+            <option value="<%= category.id %>" <%= "selected" if params[:category_id].to_i == category.id %>><%= category.name %></option>
+          <% end %>
+        </select>
+      </div>
+    <% end %>
+
+    <%= turbo_frame_tag "transactions_list" do %>
+      <% if @transactions.any? %>
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-beige text-left text-xs text-muted">
+              <th class="pb-3 font-medium">Recipient / Sender</th>
+              <th class="hidden pb-3 font-medium sm:table-cell">Category</th>
+              <th class="hidden pb-3 font-medium sm:table-cell">Transaction Date</th>
+              <th class="pb-3 text-right font-medium">Amount</th>
+              <th class="pb-3"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @transactions.each do |transaction| %>
+              <tr class="border-b border-beige last:border-0">
+                <td class="py-3">
+                  <div class="flex items-center gap-3">
+                    <% if transaction.avatar.present? %>
+                      <%= image_tag transaction.avatar, alt: "", class: "h-8 w-8 rounded-full object-cover" %>
+                    <% else %>
+                      <span class="flex h-8 w-8 items-center justify-center rounded-full bg-beige text-xs font-bold text-muted"><%= transaction.recipient.first.upcase %></span>
+                    <% end %>
+                    <span class="font-bold"><%= transaction.recipient %></span>
+                  </div>
+                </td>
+                <td class="hidden py-3 text-muted sm:table-cell"><%= transaction.category.name %></td>
+                <td class="hidden py-3 text-muted sm:table-cell"><%= transaction.occurred_on.strftime("%d %b %Y") %></td>
+                <td class="py-3 text-right font-bold <%= 'text-teal' if transaction.income? %>">
+                  <%= transaction.income? ? "+" : "-" %><%= money(transaction.amount_cents) %>
+                </td>
+                <td class="py-3 text-right">
+                  <%= link_to edit_transaction_path(transaction), data: { turbo_frame: "_top" }, class: "px-1 text-muted hover:text-navy" do %>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  <% end %>
+                  <%= button_to transaction_path(transaction), method: :delete,
+                        data: { turbo_frame: "_top", turbo_confirm: "Delete this transaction?" },
+                        class: "inline px-1 text-muted hover:text-red" do %>
+                    <i class="fa-solid fa-trash-can"></i>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="py-8 text-center text-sm text-muted">No transactions found.</p>
+      <% end %>
+
+      <% if @query.total_pages > 1 %>
+        <nav class="mt-6 flex items-center justify-between">
+          <% if @query.page > 0 %>
+            <%= link_to transactions_path(q: params[:q], category_id: params[:category_id], sort: params[:sort], page: @query.page - 1),
+                  class: "flex items-center gap-2 rounded-lg border border-beige px-4 py-2 text-sm" do %>
+              <i class="fa-solid fa-caret-left"></i> Prev
+            <% end %>
+          <% else %>
+            <span></span>
+          <% end %>
+
+          <div class="flex gap-2">
+            <% 0.upto(@query.total_pages - 1) do |n| %>
+              <%= link_to n + 1, transactions_path(q: params[:q], category_id: params[:category_id], sort: params[:sort], page: n),
+                    class: "rounded-lg px-3.5 py-2 text-sm #{n == @query.page ? 'bg-navy text-white' : 'border border-beige'}" %>
+            <% end %>
+          </div>
+
+          <% if @query.page < @query.total_pages - 1 %>
+            <%= link_to transactions_path(q: params[:q], category_id: params[:category_id], sort: params[:sort], page: @query.page + 1),
+                  class: "flex items-center gap-2 rounded-lg border border-beige px-4 py-2 text-sm" do %>
+              Next <i class="fa-solid fa-caret-right"></i>
+            <% end %>
+          <% else %>
+            <span></span>
+          <% end %>
+        </nav>
+      <% end %>
+    <% end %>
+  </section>
+</div>

@@ -1,0 +1,49 @@
+<%= form_with model: @transaction, class: "space-y-5" do |f| %>
+  <% if @transaction.errors.any? %>
+    <div class="rounded-xl bg-red/10 px-4 py-3 text-sm text-red">
+      <p class="font-bold">Couldn't save transaction:</p>
+      <ul class="mt-1 list-inside list-disc">
+        <% @transaction.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :recipient, "Recipient / Sender", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.text_field :recipient, required: true, placeholder: "e.g. Whole Foods Market",
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <%= f.label :amount, "Amount ($)", class: "mb-1 block text-sm font-bold text-muted" %>
+      <%= f.number_field :amount, step: "0.01", min: "0.01", required: true, placeholder: "0.00",
+            class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :occurred_on, "Date", class: "mb-1 block text-sm font-bold text-muted" %>
+      <%= f.date_field :occurred_on, required: true,
+            class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    </div>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2">
+    <div>
+      <%= f.label :direction, class: "mb-1 block text-sm font-bold text-muted" %>
+      <%= f.select :direction, [["Expense", "expense"], ["Income", "income"]], {},
+            class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    </div>
+    <div>
+      <%= f.label :category_id, "Category", class: "mb-1 block text-sm font-bold text-muted" %>
+      <%= f.collection_select :category_id, @categories, :id, :name, {},
+            class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3 pt-2">
+    <%= f.submit class: "rounded-lg bg-navy px-5 py-3 text-sm font-bold text-white cursor-pointer" %>
+    <%= link_to "Cancel", transactions_path, class: "text-sm text-muted" %>
+  </div>
+<% end %>

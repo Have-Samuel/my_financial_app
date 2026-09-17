@@ -10,4 +10,16 @@ class Transaction < ApplicationRecord
   validates :occurred_on, presence: true
 
   scope :chronological, -> { order(occurred_on: :desc, created_at: :desc) }
+  scope :search, ->(query) { where("recipient ILIKE ?", "%#{sanitize_sql_like(query)}%") }
+  scope :in_category, ->(category_id) { where(category_id: category_id) }
+
+  # Virtual attribute so forms can accept dollar amounts while the
+  # column stays integer cents.
+  def amount
+    amount_cents.to_f / 100
+  end
+
+  def amount=(value)
+    self.amount_cents = (value.to_f * 100).round
+  end
 end

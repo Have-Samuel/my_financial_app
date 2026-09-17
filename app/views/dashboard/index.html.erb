@@ -56,7 +56,7 @@
       <section class="rounded-xl bg-white p-6">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-bold">Transactions</h2>
-          <span class="text-sm text-muted">View All</span>
+          <%= link_to "View All", transactions_path, class: "text-sm text-muted hover:text-navy" %>
         </div>
         <% if @recent_transactions.any? %>
           <ul class="mt-2 divide-y divide-beige">
