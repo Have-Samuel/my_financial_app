@@ -1,0 +1,40 @@
+<div class="mx-auto max-w-2xl">
+  <h1 class="mb-6 text-3xl font-bold">
+    <%= @kind == "withdrawal" ? "Withdraw from" : "Add Money to" %> “<%= @pot.name %>”
+  </h1>
+
+  <div class="rounded-xl bg-white p-6">
+    <div class="mb-5 flex items-center justify-between rounded-xl bg-beige px-4 py-3 text-sm">
+      <span class="text-muted">
+        <%= @kind == "withdrawal" ? "Currently saved" : "Saved so far" %>
+      </span>
+      <span class="font-bold"><%= money(@pot.saved_cents) %> of <%= money(@pot.target_cents) %></span>
+    </div>
+
+    <%= form_with model: [@pot, @pot_transaction], class: "space-y-5" do |f| %>
+      <% if @pot_transaction.errors.any? %>
+        <div class="rounded-xl bg-red/10 px-4 py-3 text-sm text-red">
+          <ul class="list-inside list-disc">
+            <% @pot_transaction.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= hidden_field_tag "pot_transaction[kind]", @kind %>
+
+      <div>
+        <%= f.label :amount, "Amount ($)", class: "mb-1 block text-sm font-bold text-muted" %>
+        <%= f.number_field :amount, step: "0.01", min: "0.01", required: true, placeholder: "0.00",
+              class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+      </div>
+
+      <div class="flex items-center gap-3 pt-2">
+        <%= f.submit @kind == "withdrawal" ? "Confirm Withdrawal" : "Confirm Addition",
+              class: "rounded-lg bg-navy px-5 py-3 text-sm font-bold text-white cursor-pointer" %>
+        <%= link_to "Cancel", pots_path, class: "text-sm text-muted" %>
+      </div>
+    <% end %>
+  </div>
+</div>

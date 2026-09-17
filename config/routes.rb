@@ -26,6 +26,9 @@ Rails.application.routes.draw do
 
   resources :transactions, except: :show
   resources :budgets, except: :show
+  resources :pots, except: :show do
+    resources :pot_transactions, only: %i[new create]
+  end
 
   get "admin" => "admin#index"
 end

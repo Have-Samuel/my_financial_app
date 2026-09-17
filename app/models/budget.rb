@@ -24,7 +24,7 @@ class Budget < ApplicationRecord
   # Virtual attribute so forms can accept dollar amounts while the
   # column stays integer cents.
   def limit
-    limit_cents.to_f / 100
+    limit_cents && limit_cents / 100.0
   end
 
   def limit=(value)

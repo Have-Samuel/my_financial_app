@@ -2,7 +2,7 @@ class DashboardController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @balance_cents = current_user.balance_cents
+    @balance_cents = current_user.available_balance_cents
     @income_cents = current_user.monthly_income_cents
     @expenses_cents = current_user.monthly_expenses_cents
     @recent_transactions = current_user.transactions

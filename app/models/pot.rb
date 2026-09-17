@@ -11,4 +11,14 @@ class Pot < ApplicationRecord
   def saved_cents
     pot_transactions.sum(:amount_cents)
   end
+
+  # Virtual attribute so forms can accept dollar amounts while the
+  # column stays integer cents.
+  def target
+    target_cents && target_cents / 100.0
+  end
+
+  def target=(value)
+    self.target_cents = (value.to_f * 100).round
+  end
 end

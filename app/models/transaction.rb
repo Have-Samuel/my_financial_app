@@ -16,7 +16,7 @@ class Transaction < ApplicationRecord
   # Virtual attribute so forms can accept dollar amounts while the
   # column stays integer cents.
   def amount
-    amount_cents.to_f / 100
+    amount_cents && amount_cents / 100.0
   end
 
   def amount=(value)

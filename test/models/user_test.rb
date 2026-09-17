@@ -38,4 +38,9 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal expected, user.reload.monthly_income_cents
   end
+
+  test "available_balance_cents subtracts pot savings" do
+    # balance 289210 minus 13000 saved in the vacation pot
+    assert_equal 276_210, users(:one).available_balance_cents
+  end
 end

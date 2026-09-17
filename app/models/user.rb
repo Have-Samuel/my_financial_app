@@ -27,4 +27,15 @@ class User < ApplicationRecord
   def monthly_expenses_cents(date = Date.current)
     transactions.expense.where(occurred_on: date.all_month).sum(:amount_cents)
   end
+
+  def total_saved_in_pots_cents
+    PotTransaction.joins(:pot).where(pots: { user_id: id }).sum(:amount_cents)
+  end
+
+  # Spendable cash: the ledger balance minus money parked in pots.
+  # Matches the reference semantics where adding to a pot reduces
+  # the current balance and withdrawing adds it back.
+  def available_balance_cents
+    balance_cents - total_saved_in_pots_cents
+  end
 end

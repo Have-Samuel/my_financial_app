@@ -27,7 +27,7 @@ module ApplicationHelper
       { label: "Overview",        icon: "fa-house",     path: root_path },
       { label: "Transactions",    icon: "fa-receipt",   path: transactions_path },
       { label: "Budgets",         icon: "fa-chart-pie", path: budgets_path },
-      { label: "Pots",            icon: "fa-jar",       path: nil },
+      { label: "Pots",            icon: "fa-jar",       path: pots_path },
       { label: "Recurring Bills", icon: "fa-repeat",    path: nil }
     ]
   end

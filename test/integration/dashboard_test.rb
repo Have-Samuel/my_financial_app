@@ -10,7 +10,8 @@ class DashboardTest < ActionDispatch::IntegrationTest
 
     assert_includes response.body, "Overview"
     assert_includes response.body, "Current Balance"
-    assert_includes response.body, "$2,892.10" # fixture balance: 300000 - 8540 - 2250
+    # fixture balance 300000 - 8540 - 2250 = 289210, minus 13000 in pots = 276210
+    assert_includes response.body, "$2,762.10"
     assert_includes response.body, "Income"
     assert_includes response.body, "Expenses"
     assert_includes response.body, "Pots"
