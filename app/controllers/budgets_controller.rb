@@ -1,7 +1,7 @@
 class BudgetsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_budget, only: %i[edit update destroy]
-  before_action :set_available_categories, only: %i[new create edit update]
+  before_action :authenticate_user! # Ensures that only authenticated users can access the budgets dashboard
+  before_action :set_budget, only: %i[edit update destroy] # Ensures that the budget is set for edit, update, and destroy actions
+  before_action :set_available_categories, only: %i[new create edit update] # Ensures that the available categories are set for new, create, edit, and update actions
 
   def index
     @budgets = Budget.preload_monthly_spend(current_user.budgets.includes(:category))
