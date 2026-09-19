@@ -1,0 +1,129 @@
+<div class="mx-auto max-w-6xl space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-bold">Recurring Bills</h1>
+    <%= link_to "+ Add New Bill", new_recurring_bill_path,
+          class: "rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+  </div>
+
+  <% if @all_bills.any? %>
+  <div class="grid gap-6 lg:grid-cols-5">
+    <div class="space-y-6 lg:col-span-2">
+      <%# Total monthly bills %>
+      <section class="flex items-center gap-5 rounded-xl bg-navy p-6 text-white">
+        <i class="fa-solid fa-receipt text-3xl"></i>
+        <div>
+          <p class="text-sm text-white/70">Total Bills</p>
+          <p class="mt-1 text-3xl font-bold"><%= money(@all_bills.sum(&:amount_cents)) %></p>
+        </div>
+      </section>
+
+      <%# Status summary %>
+      <section class="rounded-xl bg-white p-6">
+        <h2 class="text-lg font-bold">Summary</h2>
+        <% paid = @all_bills.select(&:paid?) %>
+        <% upcoming = @all_bills.select { |b| !b.paid? && !b.due_soon? } %>
+        <% due_soon = @all_bills.select { |b| !b.paid? && b.due_soon? } %>
+        <ul class="mt-2 divide-y divide-beige text-sm">
+          <li class="flex items-center justify-between py-3">
+            <span class="text-muted">Paid Bills</span>
+            <span><%= paid.size %> <span class="font-bold"><%= money(paid.sum(&:amount_cents)) %></span></span>
+          </li>
+          <li class="flex items-center justify-between py-3">
+            <span class="text-muted">Total Upcoming</span>
+            <span><%= upcoming.size %> <span class="font-bold"><%= money(upcoming.sum(&:amount_cents)) %></span></span>
+          </li>
+          <li class="flex items-center justify-between py-3">
+            <span class="text-muted">Due Soon</span>
+            <span class="<%= 'text-red' if due_soon.any? %>"><%= due_soon.size %> <span class="font-bold"><%= money(due_soon.sum(&:amount_cents)) %></span></span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <%# Bills table %>
+    <section class="rounded-xl bg-white p-6 lg:col-span-3">
+      <%= form_with url: recurring_bills_path, method: :get,
+            data: { turbo_frame: "bills_list", controller: "search", action: "input->search#submit change->search#submit" },
+            class: "mb-4 flex flex-col gap-4 sm:flex-row sm:items-center" do %>
+        <div class="relative flex-1">
+          <input type="search" name="q" value="<%= params[:q] %>" placeholder="Search bills"
+                 class="w-full rounded-lg border border-beige px-4 py-2.5 pr-10 text-sm">
+          <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-muted"></i>
+        </div>
+        <div class="flex items-center gap-3">
+          <label for="sort" class="text-sm text-muted">Sort by</label>
+          <select id="sort" name="sort" class="rounded-lg border border-beige px-3 py-2.5 text-sm">
+            <option value="due_soon" <%= "selected" if @query.sort == "due_soon" %>>Due Soonest</option>
+            <option value="a-z"      <%= "selected" if @query.sort == "a-z" %>>A to Z</option>
+            <option value="z-a"      <%= "selected" if @query.sort == "z-a" %>>Z to A</option>
+            <option value="highest"  <%= "selected" if @query.sort == "highest" %>>Highest</option>
+            <option value="lowest"   <%= "selected" if @query.sort == "lowest" %>>Lowest</option>
+          </select>
+        </div>
+      <% end %>
+
+      <%= turbo_frame_tag "bills_list" do %>
+        <% if @bills.any? %>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-beige text-left text-xs text-muted">
+                <th class="pb-3 font-medium">Bill Title</th>
+                <th class="pb-3 font-medium">Due Date</th>
+                <th class="pb-3 text-right font-medium">Amount</th>
+                <th class="pb-3"><span class="sr-only">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @bills.each do |bill| %>
+                <tr class="border-b border-beige last:border-0">
+                  <td class="py-3">
+                    <div class="flex items-center gap-3">
+                      <% if bill.avatar.present? %>
+                        <%= image_tag bill.avatar, alt: "", class: "h-8 w-8 rounded-full object-cover" %>
+                      <% else %>
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-beige text-xs font-bold text-muted"><%= bill.title.first.upcase %></span>
+                      <% end %>
+                      <span class="font-bold"><%= bill.title %></span>
+                    </div>
+                  </td>
+                  <td class="py-3 text-muted">
+                    Monthly - <%= bill.due_day.ordinalize %>
+                    <% if bill.paid? %>
+                      <i class="fa-solid fa-circle-check ml-1 text-teal" title="Paid"></i>
+                    <% elsif bill.overdue? %>
+                      <i class="fa-solid fa-circle-exclamation ml-1 text-red" title="Overdue"></i>
+                    <% elsif bill.due_soon? %>
+                      <i class="fa-solid fa-triangle-exclamation ml-1 text-[#f2cdac]" title="Due soon"></i>
+                    <% end %>
+                  </td>
+                  <td class="py-3 text-right font-bold <%= 'text-red' if bill.overdue? %>">
+                    <%= money(bill.amount_cents) %>
+                  </td>
+                  <td class="py-3 text-right">
+                    <%= link_to edit_recurring_bill_path(bill), data: { turbo_frame: "_top" }, class: "px-1 text-muted hover:text-navy" do %>
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    <% end %>
+                    <%= button_to recurring_bill_path(bill), method: :delete,
+                          data: { turbo_frame: "_top", turbo_confirm: "Delete this recurring bill?" },
+                          class: "inline px-1 text-muted hover:text-red" do %>
+                      <i class="fa-solid fa-trash-can"></i>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="py-8 text-center text-sm text-muted">No recurring bills found.</p>
+        <% end %>
+      <% end %>
+    </section>
+  </div>
+  <% else %>
+    <section class="rounded-xl bg-white p-10 text-center">
+      <p class="text-sm text-muted">No recurring bills yet. Add a scheduled bill to track it here.</p>
+      <%= link_to "+ Add New Bill", new_recurring_bill_path,
+            class: "mt-4 inline-block rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+    </section>
+  <% end %>
+</div>

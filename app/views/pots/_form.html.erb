@@ -1,0 +1,35 @@
+<%= form_with model: @pot, class: "space-y-5" do |f| %>
+  <% if @pot.errors.any? %>
+    <div class="rounded-xl bg-red/10 px-4 py-3 text-sm text-red">
+      <p class="font-bold">Couldn't save pot:</p>
+      <ul class="mt-1 list-inside list-disc">
+        <% @pot.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Pot Name", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.text_field :name, required: true, maxlength: 30, placeholder: "e.g. Vacation Fund",
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :target, "Target ($)", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.number_field :target, step: "0.01", min: "0.01", required: true, placeholder: "e.g. 2000",
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :color, "Theme", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.select :color, theme_colors, {},
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div class="flex items-center gap-3 pt-2">
+    <%= f.submit class: "rounded-lg bg-navy px-5 py-3 text-sm font-bold text-white cursor-pointer" %>
+    <%= link_to "Cancel", pots_path, class: "text-sm text-muted" %>
+  </div>
+<% end %>

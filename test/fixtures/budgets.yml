@@ -1,0 +1,5 @@
+groceries_budget:
+  user: one
+  category: groceries
+  limit_cents: 40000
+  color: "#277C78"

@@ -1,0 +1,23 @@
+paycheck:
+  user: one
+  category: groceries
+  recipient: Acme Corp Payroll
+  amount_cents: 300000
+  direction: income
+  occurred_on: <%= 10.days.ago.to_date %>
+
+grocery_run:
+  user: one
+  category: groceries
+  recipient: Whole Foods
+  amount_cents: 8540
+  direction: expense
+  occurred_on: <%= 3.days.ago.to_date %>
+
+movie_night:
+  user: one
+  category: entertainment
+  recipient: AMC Theatres
+  amount_cents: 2250
+  direction: expense
+  occurred_on: <%= 1.day.ago.to_date %>

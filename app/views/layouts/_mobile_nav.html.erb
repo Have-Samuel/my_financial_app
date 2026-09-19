@@ -1,0 +1,17 @@
+<nav class="fixed inset-x-0 bottom-0 z-10 flex justify-around rounded-t-2xl bg-navy px-4 pt-3 pb-2 lg:hidden">
+  <% nav_items.each do |item| %>
+    <% if item[:path] %>
+      <% active = current_page?(item[:path]) %>
+      <%= link_to item[:path],
+            class: "flex flex-col items-center gap-1 rounded-t-lg border-b-4 px-4 pb-1 pt-2 text-xs #{active ? 'border-teal bg-beige text-navy' : 'border-transparent text-muted'}" do %>
+        <i class="fa-solid <%= item[:icon] %> text-lg <%= 'text-teal' if active %>"></i>
+        <span class="hidden sm:block"><%= item[:label] %></span>
+      <% end %>
+    <% else %>
+      <span class="flex cursor-default flex-col items-center gap-1 border-b-4 border-transparent px-4 pb-1 pt-2 text-xs text-muted/50">
+        <i class="fa-solid <%= item[:icon] %> text-lg"></i>
+        <span class="hidden sm:block"><%= item[:label] %></span>
+      </span>
+    <% end %>
+  <% end %>
+</nav>

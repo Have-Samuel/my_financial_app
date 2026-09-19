@@ -1,0 +1,9 @@
+groceries:
+  user: one
+  name: Groceries
+  color: "#277C78"
+
+entertainment:
+  user: one
+  name: Entertainment
+  color: "#82C9D7"

@@ -72,3 +72,4 @@ end
 gem "devise", "~> 5.0"
 
 gem "font-awesome-rails"
+gem "json", "~> 2.19"

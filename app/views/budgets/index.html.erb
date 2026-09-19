@@ -1,0 +1,120 @@
+<div class="mx-auto max-w-6xl space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-bold">Budgets</h1>
+    <%= link_to "+ Add New Budget", new_budget_path,
+          class: "rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+  </div>
+
+  <% if @budgets.any? %>
+    <% total_limit = @budgets.sum(&:limit_cents) %>
+    <% total_spent = @budgets.sum { |b| b.spent_this_month_cents } %>
+
+    <div class="grid gap-6 lg:grid-cols-5">
+      <%# Spending summary with donut %>
+      <section class="h-fit rounded-xl bg-white p-6 lg:col-span-2">
+        <div class="relative mx-auto w-fit">
+          <%= donut_chart(@budgets.map { |b| { value: b.limit_cents, color: b.color || "#97a0ac" } }, size: 280, thickness: 40) %>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <p class="text-3xl font-bold"><%= money(total_spent) %></p>
+            <p class="text-xs text-muted">of <%= money(total_limit) %> limit</p>
+          </div>
+        </div>
+
+        <h2 class="mt-6 text-lg font-bold">Spending Summary</h2>
+        <ul class="mt-2 divide-y divide-beige">
+          <% @budgets.each do |budget| %>
+            <li class="flex items-center gap-3 py-3">
+              <span class="h-8 w-1 rounded-full" style="background-color: <%= budget.color || '#97a0ac' %>"></span>
+              <span class="flex-1 text-sm text-muted"><%= budget.category.name %></span>
+              <span class="text-sm font-bold"><%= money(budget.spent_this_month_cents) %></span>
+              <span class="text-xs text-muted">of <%= money(budget.limit_cents) %></span>
+            </li>
+          <% end %>
+        </ul>
+      </section>
+
+      <%# Per-budget cards %>
+      <div class="space-y-6 lg:col-span-3">
+        <% @budgets.each do |budget| %>
+          <% spent = budget.spent_this_month_cents %>
+          <% remaining = budget.remaining_this_month_cents %>
+          <% pct = [(spent / budget.limit_cents.to_f * 100), 100].min %>
+
+          <section class="rounded-xl bg-white p-6">
+            <div class="flex items-center justify-between">
+              <h3 class="flex items-center gap-3 text-lg font-bold">
+                <span class="h-4 w-4 rounded-full" style="background-color: <%= budget.color || '#97a0ac' %>"></span>
+                <%= budget.category.name %>
+              </h3>
+              <div class="flex items-center gap-1 text-muted">
+                <%= link_to edit_budget_path(budget), class: "px-2 py-1 hover:text-navy", title: "Edit" do %>
+                  <i class="fa-solid fa-pen-to-square"></i>
+                <% end %>
+                <%= button_to budget_path(budget), method: :delete,
+                      data: { turbo_confirm: "Delete this budget?" },
+                      class: "px-2 py-1 hover:text-red", title: "Delete" do %>
+                  <i class="fa-solid fa-trash-can"></i>
+                <% end %>
+              </div>
+            </div>
+
+            <p class="mt-1 text-sm text-muted">Maximum of <%= money(budget.limit_cents) %></p>
+
+            <div class="mt-4 h-8 overflow-hidden rounded bg-beige p-1">
+              <div class="h-full rounded transition-all" style="width: <%= pct %>%; background-color: <%= budget.color || '#97a0ac' %>"></div>
+            </div>
+
+            <div class="mt-4 grid grid-cols-2 gap-4">
+              <div class="flex items-center gap-3">
+                <span class="h-10 w-1 rounded-full" style="background-color: <%= budget.color || '#97a0ac' %>"></span>
+                <div>
+                  <p class="text-xs text-muted">Spent</p>
+                  <p class="text-sm font-bold"><%= money(spent) %></p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="h-10 w-1 rounded-full bg-beige"></span>
+                <div>
+                  <p class="text-xs text-muted">Remaining</p>
+                  <p class="text-sm font-bold"><%= money(remaining) %></p>
+                </div>
+              </div>
+            </div>
+
+            <% latest = budget.latest_spending %>
+            <% if latest.any? %>
+              <div class="mt-5 rounded-xl bg-beige p-4">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-bold">Latest Spending</h4>
+                  <%= link_to "See All", transactions_path(category_id: budget.category_id), class: "text-xs text-muted hover:text-navy" %>
+                </div>
+                <ul class="mt-2 divide-y divide-white">
+                  <% latest.each do |transaction| %>
+                    <li class="flex items-center gap-3 py-2">
+                      <% if transaction.avatar.present? %>
+                        <%= image_tag transaction.avatar, alt: "", class: "h-8 w-8 rounded-full object-cover" %>
+                      <% else %>
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-xs font-bold text-muted"><%= transaction.recipient.first.upcase %></span>
+                      <% end %>
+                      <span class="min-w-0 flex-1 truncate text-xs font-bold"><%= transaction.recipient %></span>
+                      <span class="text-right">
+                        <span class="block text-xs font-bold">-<%= money(transaction.amount_cents) %></span>
+                        <span class="block text-xs text-muted"><%= transaction.occurred_on.strftime("%d %b %Y") %></span>
+                      </span>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            <% end %>
+          </section>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <section class="rounded-xl bg-white p-10 text-center">
+      <p class="text-sm text-muted">No budgets yet. Set a spending limit on a category to get started.</p>
+      <%= link_to "+ Add New Budget", new_budget_path,
+            class: "mt-4 inline-block rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+    </section>
+  <% end %>
+</div>
