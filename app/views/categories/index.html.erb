@@ -1,0 +1,38 @@
+<div class="mx-auto max-w-6xl space-y-6">
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-bold">Categories</h1>
+    <%= link_to "+ Add New Category", new_category_path,
+          class: "rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+  </div>
+
+  <% if @categories.any? %>
+    <section class="rounded-xl bg-white p-6">
+      <ul class="divide-y divide-beige">
+        <% @categories.each do |category| %>
+          <li class="flex items-center gap-4 py-3">
+            <span class="h-4 w-4 rounded-full" style="background-color: <%= category.color || '#97a0ac' %>"></span>
+            <span class="flex-1 text-sm font-bold"><%= category.name %></span>
+            <span class="text-xs text-muted"><%= pluralize(category.transactions.size, "transaction") %></span>
+            <span class="flex items-center gap-1 text-muted">
+              <%= link_to edit_category_path(category), class: "px-2 py-1 hover:text-navy", title: "Edit" do %>
+                <i class="fa-solid fa-pen-to-square"></i>
+              <% end %>
+              <%= button_to category_path(category), method: :delete,
+                    data: { turbo_confirm: "Delete this category?" },
+                    class: "px-2 py-1 hover:text-red", title: "Delete" do %>
+                <i class="fa-solid fa-trash-can"></i>
+              <% end %>
+            </span>
+          </li>
+        <% end %>
+      </ul>
+      <p class="mt-4 text-xs text-muted">Categories with transactions can't be deleted — remove or recategorize them first.</p>
+    </section>
+  <% else %>
+    <section class="rounded-xl bg-white p-10 text-center">
+      <p class="text-sm text-muted">No categories yet. Create one to label your transactions and budgets.</p>
+      <%= link_to "+ Add New Category", new_category_path,
+            class: "mt-4 inline-block rounded-lg bg-navy px-4 py-3 text-sm font-bold text-white" %>
+    </section>
+  <% end %>
+</div>

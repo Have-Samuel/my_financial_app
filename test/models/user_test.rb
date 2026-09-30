@@ -43,4 +43,10 @@ class UserTest < ActiveSupport::TestCase
     # balance 289210 minus 13000 saved in the vacation pot
     assert_equal 276_210, users(:one).available_balance_cents
   end
+
+  test "new users are seeded with the default categories" do
+    user = User.create!(name: "New User", email: "new@example.com", password: "secret123")
+    assert_equal User::DEFAULT_CATEGORIES.size, user.categories.count
+    assert_includes user.categories.pluck(:name), "Groceries"
+  end
 end

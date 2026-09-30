@@ -11,20 +11,9 @@ user = User.find_or_create_by!(email: "demo@example.com") do |u|
 end
 
 # --- Categories -------------------------------------------------------------
-CATEGORY_DEFAULTS = [
-  { name: "Entertainment",   color: "#277C78" },
-  { name: "Bills",           color: "#82C9D7" },
-  { name: "Groceries",       color: "#F2CDAC" },
-  { name: "Dining Out",      color: "#626070" },
-  { name: "Transportation",  color: "#C94736" },
-  { name: "Personal Care",   color: "#826CB0" },
-  { name: "Education",       color: "#597C7C" },
-  { name: "Lifestyle",       color: "#93674F" },
-  { name: "Shopping",        color: "#3F82B2" },
-  { name: "General",         color: "#97A0AC" }
-].freeze
-
-categories = CATEGORY_DEFAULTS.each_with_object({}) do |attrs, hash|
+# User::DEFAULT_CATEGORIES is the single source of truth; the same list
+# is also created by the after_create callback on every new sign-up.
+categories = User::DEFAULT_CATEGORIES.each_with_object({}) do |attrs, hash|
   hash[attrs[:name]] = user.categories.find_or_create_by!(name: attrs[:name]) do |c|
     c.color = attrs[:color]
   end
