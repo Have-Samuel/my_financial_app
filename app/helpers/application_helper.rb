@@ -28,7 +28,8 @@ module ApplicationHelper
       { label: "Transactions",    icon: "fa-receipt",   path: transactions_path },
       { label: "Budgets",         icon: "fa-chart-pie", path: budgets_path },
       { label: "Pots",            icon: "fa-jar",       path: pots_path },
-      { label: "Recurring Bills", icon: "fa-repeat",    path: recurring_bills_path }
+      { label: "Recurring Bills", icon: "fa-repeat",    path: recurring_bills_path },
+      { label: "Categories",      icon: "fa-tags",      path: categories_path }
     ]
   end
 end

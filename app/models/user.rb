@@ -1,4 +1,19 @@
 class User < ApplicationRecord
+  # Seeded on sign-up so a fresh account can create transactions
+  # immediately — transactions require a category.
+  DEFAULT_CATEGORIES = [
+    { name: "Entertainment",   color: "#277C78" },
+    { name: "Bills",           color: "#82C9D7" },
+    { name: "Groceries",       color: "#F2CDAC" },
+    { name: "Dining Out",      color: "#626070" },
+    { name: "Transportation",  color: "#C94736" },
+    { name: "Personal Care",   color: "#826CB0" },
+    { name: "Education",       color: "#597C7C" },
+    { name: "Lifestyle",       color: "#93674F" },
+    { name: "Shopping",        color: "#3F82B2" },
+    { name: "General",         color: "#97A0AC" }
+  ].freeze
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -13,6 +28,8 @@ class User < ApplicationRecord
   has_many :categories, dependent: :destroy
 
   validates :name, presence: true
+
+  after_create :seed_default_categories
 
   # Balance is derived from the ledger: income minus expenses.
   # An "opening balance" income transaction seeds the starting point.
@@ -37,5 +54,17 @@ class User < ApplicationRecord
   # the current balance and withdrawing adds it back.
   def available_balance_cents
     balance_cents - total_saved_in_pots_cents
+  end
+
+  private
+
+  # find_or_create_by! keeps it idempotent when backfilling users
+  # that already have some of these categories.
+  def seed_default_categories
+    DEFAULT_CATEGORIES.each do |attrs|
+      categories.find_or_create_by!(name: attrs[:name]) do |category|
+        category.color = attrs[:color]
+      end
+    end
   end
 end

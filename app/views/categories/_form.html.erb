@@ -1,0 +1,29 @@
+<%= form_with model: @category, class: "space-y-5" do |f| %>
+  <% if @category.errors.any? %>
+    <div class="rounded-xl bg-red/10 px-4 py-3 text-sm text-red">
+      <p class="font-bold">Couldn't save category:</p>
+      <ul class="mt-1 list-inside list-disc">
+        <% @category.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, "Category Name", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.text_field :name, required: true, maxlength: 30, placeholder: "e.g. Groceries",
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :color, "Theme", class: "mb-1 block text-sm font-bold text-muted" %>
+    <%= f.select :color, theme_colors, {},
+          class: "w-full rounded-lg border border-beige px-4 py-2.5 text-sm" %>
+  </div>
+
+  <div class="flex items-center gap-3 pt-2">
+    <%= f.submit class: "rounded-lg bg-navy px-5 py-3 text-sm font-bold text-white cursor-pointer" %>
+    <%= link_to "Cancel", categories_path, class: "text-sm text-muted" %>
+  </div>
+<% end %>
