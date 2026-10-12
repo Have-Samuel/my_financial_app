@@ -69,7 +69,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "devise", "~> 5.0"
+gem "devise", "~> 5.0" # Authentication solution for Rails
 
-gem "font-awesome-rails"
-gem "json", "~> 2.19"
+gem "font-awesome-rails" # Provides the Font Awesome icon set for use in Rails applications
+gem "json", "~> 2.19" # A fast JSON parser and generator for Ruby

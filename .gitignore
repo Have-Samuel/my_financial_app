@@ -40,3 +40,6 @@
 # Local-only docs (agent rules + codebase walkthrough)
 /AGENTS.md
 /docs/
+
+/config
+

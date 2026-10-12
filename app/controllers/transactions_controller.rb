@@ -1,7 +1,7 @@
 class TransactionsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :set_transaction, only: %i[edit update destroy]
-  before_action :set_categories, only: %i[index new create edit update]
+  before_action :authenticate_user! # Ensures that only authenticated users can access the transactions actions
+  before_action :set_transaction, only: %i[edit update destroy] # Sets the @transaction instance variable for the edit, update, and destroy actions by finding the transaction belonging to the current user based on the provided ID.
+  before_action :set_categories, only: %i[index new create edit update] # Sets the @categories instance variable to the current user's categories, ordered by name. This is used in the index, new, create, edit, and update actions to provide a list of categories for transaction selection.
 
   def index
     @query = TransactionsQuery.new(current_user.transactions.includes(:category), index_params)
@@ -43,7 +43,7 @@ class TransactionsController < ApplicationController
   def set_transaction
     @transaction = current_user.transactions.find(params[:id])
   end
-
+  # Sets the @categories instance variable to the current user's categories, ordered by name. This is used in the index, new, create, edit, and update actions to provide a list of categories for transaction selection.
   def set_categories
     @categories = current_user.categories.order(:name)
   end
